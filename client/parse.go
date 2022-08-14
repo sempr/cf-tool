@@ -3,14 +3,13 @@ package client
 import (
 	"bytes"
 	"fmt"
-	"html"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"sync"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/sempr/cf/util"
 
 	"github.com/k0kubun/go-ansi"
@@ -19,23 +18,22 @@ import (
 )
 
 func findSample(body []byte) (input [][]byte, output [][]byte, err error) {
-	irg := regexp.MustCompile(`class="input"[\s\S]*?<pre>([\s\S]*?)</pre>`)
-	org := regexp.MustCompile(`class="output"[\s\S]*?<pre>([\s\S]*?)</pre>`)
-	a := irg.FindAllSubmatch(body, -1)
-	b := org.FindAllSubmatch(body, -1)
-	if a == nil || b == nil || len(a) != len(b) {
-		return nil, nil, fmt.Errorf("cannot parse sample with input %v and output %v", len(a), len(b))
+	doc, err := goquery.NewDocumentFromReader(bytes.NewBuffer(body))
+	if err != nil {
+		return
 	}
-	newline := regexp.MustCompile(`<[\s/br]+?>`)
-	filter := func(src []byte) []byte {
-		src = newline.ReplaceAll(src, []byte("\n"))
-		s := html.UnescapeString(string(src))
-		return []byte(strings.TrimSpace(s) + "\n")
-	}
-	for i := 0; i < len(a); i++ {
-		input = append(input, filter(a[i][1]))
-		output = append(output, filter(b[i][1]))
-	}
+	doc.Find(".input pre").Each(func(i int, s *goquery.Selection) {
+		tmp := []string{}
+		s.Find(".test-example-line").Each(func(j int, t *goquery.Selection) {
+			tmp = append(tmp, t.Text())
+		})
+		tmpStr := strings.Join(tmp, "\n")
+		input = append(input, []byte(tmpStr))
+	})
+	doc.Find(".output pre").Each(func(i int, s *goquery.Selection) {
+		output1 := s.Text()
+		output = append(output, []byte(output1))
+	})
 	return
 }
 
