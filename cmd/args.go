@@ -134,7 +134,7 @@ const ProblemRegStr = `[a-z]`
 const StrictProblemRegStr = `[a-zA-Z]`
 
 // ContestRegStr contest
-const ContestRegStr = `a[br]c\d{1,4}`
+const ContestRegStr = `a[brg]c\d{1,4}`
 
 // GroupRegStr group
 const GroupRegStr = `\w{10}`
