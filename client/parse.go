@@ -28,7 +28,7 @@ func findSample(body []byte) (input [][]byte, output [][]byte, err error) {
 			return
 		}
 		name := s.Find("h3").Text()
-		data := strings.Trim(s.Find("pre").Text(), "\n \t")
+		data := strings.Trim(s.Find("pre").First().Text(), "\n \t")
 		if strings.Contains(name, "Sample Input") {
 			input = append(input, []byte(data))
 		} else if strings.Contains(name, "Sample Output") {
