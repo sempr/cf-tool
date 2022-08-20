@@ -1,3 +1,4 @@
+//lint:file-ignore ST1005 ignore
 package cmd
 
 import (
