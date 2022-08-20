@@ -1,3 +1,4 @@
+//lint:file-ignore ST1005 ignore
 package cmd
 
 import (
@@ -101,7 +102,7 @@ func getCode(filename string, templates []config.CodeTemplate) (codes []CodeList
 	if filename != "" {
 		ext := filepath.Ext(filename)
 		if idx, ok := mp[ext]; ok {
-			return []CodeList{CodeList{filename, idx}}, nil
+			return []CodeList{{Name: filename, Index: idx}}, nil
 		}
 		return nil, fmt.Errorf("%v can not match any template. You could add a new template by `cf config`", filename)
 	}
