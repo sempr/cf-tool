@@ -27,7 +27,7 @@ func Race() (err error) {
 		return
 	}
 	fmt.Printf("Open ProblemSetURL %s\n", URL)
-	// openURL(URL)
+	openURL(URL)
 	// openURL(URL + "/problems")
 	return Parse()
 }
