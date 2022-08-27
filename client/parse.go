@@ -27,8 +27,12 @@ func findSample(body []byte) (input [][]byte, output [][]byte, err error) {
 		s.Find(".test-example-line").Each(func(j int, t *goquery.Selection) {
 			tmp = append(tmp, t.Text())
 		})
-		tmpStr := strings.Join(tmp, "\n")
-		input = append(input, []byte(tmpStr))
+		if len(tmp) == 0 {
+			input = append(input, []byte(s.Text()))
+		} else {
+			tmpStr := strings.Join(tmp, "\n")
+			input = append(input, []byte(tmpStr))
+		}
 	})
 	doc.Find(".output pre").Each(func(i int, s *goquery.Selection) {
 		output1 := s.Text()
