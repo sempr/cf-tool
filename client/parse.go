@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 
@@ -17,26 +18,33 @@ import (
 	"github.com/fatih/color"
 )
 
+func sToText(s *goquery.Selection) []byte {
+	re := regexp.MustCompile(`<br[ ]?/>`)
+	tmp := []string{}
+	s.Find(".test-example-line").Each(func(_ int, t *goquery.Selection) {
+		tmp = append(tmp, t.Text())
+	})
+	if len(tmp) == 0 {
+		ht, _ := s.Html()
+		tmpStr := re.ReplaceAllString(ht, "\n")
+		return []byte(tmpStr)
+	} else {
+		tmpStr := strings.Join(tmp, "\n")
+		return []byte(tmpStr)
+	}
+
+}
+
 func findSample(body []byte) (input [][]byte, output [][]byte, err error) {
 	doc, err := goquery.NewDocumentFromReader(bytes.NewBuffer(body))
 	if err != nil {
 		return
 	}
 	doc.Find(".input pre").Each(func(i int, s *goquery.Selection) {
-		tmp := []string{}
-		s.Find(".test-example-line").Each(func(j int, t *goquery.Selection) {
-			tmp = append(tmp, t.Text())
-		})
-		if len(tmp) == 0 {
-			input = append(input, []byte(s.Text()))
-		} else {
-			tmpStr := strings.Join(tmp, "\n")
-			input = append(input, []byte(tmpStr))
-		}
+		input = append(input, sToText(s))
 	})
 	doc.Find(".output pre").Each(func(i int, s *goquery.Selection) {
-		output1 := s.Text()
-		output = append(output, []byte(output1))
+		output = append(output, sToText(s))
 	})
 	return
 }
