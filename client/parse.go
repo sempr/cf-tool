@@ -3,7 +3,6 @@ package client
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -74,7 +73,7 @@ func (c *Client) ParseProblem(URL, path string, mu *sync.Mutex) (samples int, st
 	for i := 0; i < len(input); i++ {
 		fileIn := filepath.Join(path, fmt.Sprintf("in%v.txt", i+1))
 		fileOut := filepath.Join(path, fmt.Sprintf("ans%v.txt", i+1))
-		e := ioutil.WriteFile(fileIn, input[i], 0644)
+		e := os.WriteFile(fileIn, input[i], 0644)
 		if e != nil {
 			if mu != nil {
 				mu.Lock()
@@ -84,7 +83,7 @@ func (c *Client) ParseProblem(URL, path string, mu *sync.Mutex) (samples int, st
 				mu.Unlock()
 			}
 		}
-		e = ioutil.WriteFile(fileOut, output[i], 0644)
+		e = os.WriteFile(fileOut, output[i], 0644)
 		if e != nil {
 			if mu != nil {
 				mu.Lock()

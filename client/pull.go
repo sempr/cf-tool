@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"html"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -73,7 +72,7 @@ func (c *Client) PullCode(URL, path, ext string, rename bool) (filename string, 
 		return
 	}
 
-	err = ioutil.WriteFile(filename, []byte(code), 0644)
+	err = os.WriteFile(filename, []byte(code), 0644)
 	return
 }
 
