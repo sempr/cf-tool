@@ -183,9 +183,9 @@ func (info *Info) OpenURL(host string) (string, error) {
 		if info.ContestID == "" {
 			return host + "/contests", nil
 		} else if info.ProblemID == "" {
-			return fmt.Sprintf(host+"/contest/%v", info.ContestID), nil
+			return fmt.Sprintf(host+"/contests/%v", info.ContestID), nil
 		}
-		return fmt.Sprintf(host+"/contest/%v/problem/%v", info.ContestID, info.ProblemID), nil
+		return fmt.Sprintf(host+"/contests/%v/problem/%v", info.ContestID, info.ProblemID), nil
 	case "gym":
 		if info.ContestID == "" {
 			return host + "/gyms", nil
