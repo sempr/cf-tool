@@ -2,14 +2,18 @@ package util
 
 import (
 	"bufio"
+	"crypto/aes"
+	"crypto/cipher"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -72,6 +76,35 @@ func YesOrNo(note string) bool {
 	}
 }
 
+// Set RCPC
+func SetRCPC(client *http.Client, body []byte, URL string) ([]byte, error) {
+	reg := regexp.MustCompile(`toNumbers\("(.+?)"\)`)
+	res := reg.FindAllStringSubmatch(string(body), -1)
+	text, _ := hex.DecodeString(res[2][1])
+	key, _ := hex.DecodeString(res[0][1])
+	iv, _ := hex.DecodeString(res[1][1])
+
+	block, _ := aes.NewCipher(key)
+	mode := cipher.NewCBCDecrypter(block, iv)
+
+	mode.CryptBlocks([]byte(text), []byte(text))
+
+	var cookies []*http.Cookie
+	cookie := &http.Cookie{
+		Name:   "RCPC",
+		Value:  hex.EncodeToString(text),
+		Path:   "/",
+		Domain: ".codeforces.com",
+	}
+	cookies = append(cookies, cookie)
+	u, _ := url.Parse("https://codeforces.com/")
+	client.Jar.SetCookies(u, cookies)
+
+	reg = regexp.MustCompile(`href="(.+?)"`)
+	link := reg.FindSubmatch(body)[1]
+	return GetBody(client, string(link))
+}
+
 // GetBody read body
 func GetBody(client *http.Client, URL string) ([]byte, error) {
 	resp, err := client.Get(URL)
@@ -79,7 +112,14 @@ func GetBody(client *http.Client, URL string) ([]byte, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
+	reg := regexp.MustCompile(`Redirecting...`)
+	is_redirected := (len(reg.FindSubmatch(body)) > 0)
+
+	if is_redirected {
+		return SetRCPC(client, body, URL)
+	}
+	return body, err
 }
 
 // PostBody read post body
@@ -89,7 +129,7 @@ func PostBody(client *http.Client, URL string, data url.Values) ([]byte, error) 
 		return nil, err
 	}
 	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 // GetJSONBody read json body

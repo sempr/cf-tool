@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net/http"
 	"net/url"
 	"regexp"
 	"syscall"
@@ -63,13 +62,6 @@ func (c *Client) Login() (err error) {
 
 	jar, _ := cookiejar.New(nil)
 	c.client.Jar = jar
-	cookie := &http.Cookie{
-		Name:   "RCPC",
-		Value:  "9fd2d2b3c36c74adc186da473a6b12cc",
-		MaxAge: 86400 * 365 * 10,
-	}
-	urlObj, _ := url.Parse(c.host)
-	c.client.Jar.SetCookies(urlObj, []*http.Cookie{cookie})
 
 	body, err := util.GetBody(c.client, c.host+"/enter")
 	if err != nil {

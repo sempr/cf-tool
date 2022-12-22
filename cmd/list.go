@@ -49,7 +49,7 @@ func List() (err error) {
 		line := scanner.Text()
 		if i >= 0 {
 			if strings.Contains(problems[i].State, "accepted") {
-				line = color.New(color.BgGreen).Sprint(line)
+				line = color.New(color.FgGreen).Sprint(line)
 			} else if strings.Contains(problems[i].State, "rejected") {
 				line = color.New(color.BgRed).Sprint(line)
 			}
