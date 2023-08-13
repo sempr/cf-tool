@@ -93,7 +93,7 @@ var Langs = map[string]string{
         "5087":"Seed7 (Seed7 3.2.1)",
         "5088":"Emacs Lisp (No Compile) (GNU Emacs 28.2)",
         "5089":"Unison (Unison M5b)",
-        "5090":"COBOL (GnuCOBOL(Fixed) 3.1.2)"
+        "5090":"COBOL (GnuCOBOL(Fixed) 3.1.2)",
 }
 
 // LangsExt language's ext
