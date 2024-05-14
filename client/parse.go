@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"fmt"
+	"html"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -26,9 +27,11 @@ func sToText(s *goquery.Selection) []byte {
 	if len(tmp) == 0 {
 		ht, _ := s.Html()
 		tmpStr := re.ReplaceAllString(ht, "\n")
+		tmpStr = html.UnescapeString(tmpStr)
 		return []byte(tmpStr)
 	} else {
 		tmpStr := strings.Join(tmp, "\n")
+		tmpStr = html.UnescapeString(tmpStr)
 		return []byte(tmpStr)
 	}
 
