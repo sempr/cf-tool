@@ -15,12 +15,12 @@ import (
 	docopt "github.com/docopt/docopt-go"
 )
 
-const version = "v1.0.0"
+var Version = "development"
 const configPath = "~/.cf/config"
 const sessionPath = "~/.cf/session"
 
 func main() {
-	usage := `Codeforces Tool $%version%$ (cf). https://github.com/sempr/cf
+	usage := `Codeforces Tool $%version%$ (cf). https://github.com/sempr/cf-tool
 
 You should run "cf config" to configure your handle, password and code
 templates at first.
@@ -148,9 +148,9 @@ Script in template:
   $%rand%$   Random string with 8 character (including "a-z" "0-9")`
 	color.Output = ansi.NewAnsiStdout()
 
-	usage = strings.Replace(usage, `$%version%$`, version, 1)
-	opts, _ := docopt.ParseArgs(usage, os.Args[1:], fmt.Sprintf("Codeforces Tool (cf) %v", version))
-	opts[`{version}`] = version
+	usage = strings.Replace(usage, `$%version%$`, Version, 1)
+	opts, _ := docopt.ParseArgs(usage, os.Args[1:], fmt.Sprintf("Codeforces Tool (cf) Modified by Sempr %v", Version))
+	opts[`{version}`] = Version
 
 	cfgPath, _ := homedir.Expand(configPath)
 	clnPath, _ := homedir.Expand(sessionPath)

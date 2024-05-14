@@ -1,6 +1,8 @@
 NAME=cf
 BINDIR=bin
-GOBUILD=go build 
+VER := $(shell git rev-parse HEAD)
+DT := $(shell date +%Y%m%d%H%M%S.%Z)
+GOBUILD=go build -ldflags="-X 'main.Version=${DT}_$(VER)'" 
 
 all: prepare linux-386 linux-amd64 linux-armv8 windows-386 windows-amd64 windows-arm64 darwin-amd64 darwin-arm64
 
