@@ -15,33 +15,33 @@ import (
 	docopt "github.com/docopt/docopt-go"
 )
 
-const version = "v1.0.0"
+var version = "v1.0.0"
 const configPath = "~/.atcoder/config"
 const sessionPath = "~/.atcoder/session"
 
 func main() {
-	usage := `Codeforces Tool $%version%$ (cf). https://github.com/sempr/cf
+	usage := `AtCoder Tool $%version%$ (atc). https://github.com/sempr/cf
 
-You should run "cf config" to configure your handle, password and code
+You should run "$%CF%$ config" to configure your handle, password and code
 templates at first.
 
-If you want to compete, the best command is "cf race"
+If you want to compete, the best command is "$%CF%$ race"
 
 Usage:
-  cf config
-  cf submit [-f <file>] [<specifier>...]
-  cf list [<specifier>...]
-  cf parse [<specifier>...]
-  cf gen [<alias>]
-  cf test [<file>]
-  cf watch [all] [<specifier>...]
-  cf open [<specifier>...]
-  cf stand [<specifier>...]
-  cf sid [<specifier>...]
-  cf race [<specifier>...]
-  cf pull [ac] [<specifier>...]
-  cf clone [ac] [<handle>]
-  cf upgrade
+  $%CF%$ config
+  $%CF%$ submit [-f <file>] [<specifier>...]
+  $%CF%$ list [<specifier>...]
+  $%CF%$ parse [<specifier>...]
+  $%CF%$ gen [<alias>]
+  $%CF%$ test [<file>]
+  $%CF%$ watch [all] [<specifier>...]
+  $%CF%$ open [<specifier>...]
+  $%CF%$ stand [<specifier>...]
+  $%CF%$ sid [<specifier>...]
+  $%CF%$ race [<specifier>...]
+  $%CF%$ pull [ac] [<specifier>...]
+  $%CF%$ clone [ac] [<handle>]
+  $%CF%$ upgrade
 
 Options:
   -h --help            Show this screen.
@@ -58,67 +58,67 @@ Options:
   ac                   The status of the submission is Accepted.
 
 Examples:
-  cf config            Configure the cf-tool.
-  cf submit            cf will detect what you want to submit automatically.
-  cf submit -f a.cpp
-  cf submit https://atcoder.jp/contests/abc259/tasks/abc259_a
-  cf submit -f a.cpp 100A 
-  cf submit -f a.cpp 100 a
-  cf submit contest 100 a
-  cf submit gym 100001 a
-  cf list              List all problems' stats of a contest.
-  cf list 1119
-  cf parse 100         Fetch all problems' samples of contest 100 into
+  $%CF%$ config            Configure the cf-tool.
+  $%CF%$ submit            $%CF%$ will detect what you want to submit automatically.
+  $%CF%$ submit -f a.cpp
+  $%CF%$ submit https://atcoder.jp/contests/abc259/tasks/abc259_a
+  $%CF%$ submit -f a.cpp 100A 
+  $%CF%$ submit -f a.cpp 100 a
+  $%CF%$ submit contest 100 a
+  $%CF%$ submit gym 100001 a
+  $%CF%$ list              List all problems' stats of a contest.
+  $%CF%$ list 1119
+  $%CF%$ parse 100         Fetch all problems' samples of contest 100 into
                        "{cf}/{contest}/100/<problem-id>".
-  cf parse gym 100001a
+  $%CF%$ parse gym 100001a
                        Fetch samples of problem "a" of gym 100001 into
                        "{cf}/{gym}/100001/a".
-  cf parse gym 100001
+  $%CF%$ parse gym 100001
                        Fetch all problems' samples of gym 100001 into
                        "{cf}/{gym}/100001".
-  cf parse             Fetch samples of current problem into current path.
-  cf gen               Generate a code from default template.
-  cf gen cpp           Generate a code from the template whose alias is "cpp"
+  $%CF%$ parse             Fetch samples of current problem into current path.
+  $%CF%$ gen               Generate a code from default template.
+  $%CF%$ gen cpp           Generate a code from the template whose alias is "cpp"
                        into current path.
-  cf test              Run the commands of a template in current path. Then
+  $%CF%$ test              Run the commands of a template in current path. Then
                        test all samples. If you want to add a new testcase,
                        create two files "inK.txt" and "ansK.txt" where K is
                        a string with 0~9.
-  cf watch             Watch the first 10 submissions of current contest.
-  cf watch all         Watch all submissions of current contest.
-  cf open 1136a        Use default web browser to open the page of contest
+  $%CF%$ watch             Watch the first 10 submissions of current contest.
+  $%CF%$ watch all         Watch all submissions of current contest.
+  $%CF%$ open 1136a        Use default web browser to open the page of contest
                        1136, problem a.
-  cf open gym 100136   Use default web browser to open the page of gym
+  $%CF%$ open gym 100136   Use default web browser to open the page of gym
                        100136.
-  cf stand             Use default web browser to open the standing page.
-  cf sid 52531875      Use default web browser to open the submission
+  $%CF%$ stand             Use default web browser to open the standing page.
+  $%CF%$ sid 52531875      Use default web browser to open the submission
                        52531875's page.
-  cf sid               Open the last submission's page.
-  cf race 1136         If the contest 1136 has not started yet, it will
+  $%CF%$ sid               Open the last submission's page.
+  $%CF%$ race 1136         If the contest 1136 has not started yet, it will
                        countdown. When the countdown ends, it will open all
                        problems' pages and parse samples.
-  cf pull 100          Pull all problems' latest codes of contest 100 into
+  $%CF%$ pull 100          Pull all problems' latest codes of contest 100 into
                        "./100/<problem-id>".
-  cf pull 100 a        Pull the latest code of problem "a" of contest 100 into
+  $%CF%$ pull 100 a        Pull the latest code of problem "a" of contest 100 into
                        "./100/<problem-id>".
-  cf pull ac 100 a     Pull the "Accepted" or "Pretests passed" code of problem
+  $%CF%$ pull ac 100 a     Pull the "Accepted" or "Pretests passed" code of problem
                        "a" of contest 100.
-  cf pull              Pull the latest codes of current problem into current
+  $%CF%$ pull              Pull the latest codes of current problem into current
                        path.
-  cf clone xalanq      Clone all codes of xalanq.
-  cf upgrade           Upgrade the "cf" to the latest version from GitHub.
+  $%CF%$ clone xalanq      Clone all codes of xalanq.
+  $%CF%$ upgrade           Upgrade the "cf" to the latest version from GitHub.
 
 File:
-  cf will save some data in some files:
+  $%CF%$ will save some data in some files:
 
-  "~/.cf/config"        Configuration file, including templates, etc.
-  "~/.cf/session"       Session file, including cookies, handle, password, etc.
+  "~/.atcoder/config"        Configuration file, including templates, etc.
+  "~/.atcoder/session"       Session file, including cookies, handle, password, etc.
 
   "~" is the home directory of current user in your system.
 
 Template:
   You can insert some placeholders into your template code. When generate a code
-  from the template, cf will replace all placeholders by following rules:
+  from the template, $%CF%$ will replace all placeholders by following rules:
 
   $%U%$   Handle (e.g. xalanq)
   $%Y%$   Year   (e.g. 2019)
@@ -129,7 +129,7 @@ Template:
   $%s%$   Second (e.g. 00)
 
 Script in template:
-  Template will run 3 scripts in sequence when you run "cf test":
+  Template will run 3 scripts in sequence when you run "$%CF%$ test":
     - before_script   (execute once)
     - script          (execute the number of samples times)
     - after_script    (execute once)
@@ -139,7 +139,7 @@ Script in template:
   need to redirect).
 
   You can insert some placeholders in your scripts. When execute a script,
-  cf will replace all placeholders by following rules:
+  $%CF%$ will replace all placeholders by following rules:
 
   $%path%$   Path to source file (Excluding $%full%$, e.g. "/home/xalanq/")
   $%full%$   Full name of source file (e.g. "a.cpp")
@@ -148,7 +148,8 @@ Script in template:
 	color.Output = ansi.NewAnsiStdout()
 
 	usage = strings.Replace(usage, `$%version%$`, version, 1)
-	opts, _ := docopt.ParseArgs(usage, os.Args[1:], fmt.Sprintf("Codeforces Tool (cf) %v", version))
+	usage = strings.ReplaceAll(usage, `$%CF%$`, os.Args[0])
+	opts, _ := docopt.ParseArgs(usage, os.Args[1:], fmt.Sprintf("AtCoder Tool (cf) %v", version))
 	opts[`{version}`] = version
 
 	cfgPath, _ := homedir.Expand(configPath)
