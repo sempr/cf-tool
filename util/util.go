@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"github.com/fatih/color"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -12,8 +13,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/fatih/color"
+	"time"
 )
 
 // CHA map
@@ -72,9 +72,31 @@ func YesOrNo(note string) bool {
 	}
 }
 
+func retryRequest(client *http.Client, req *http.Request, retries int) (*http.Response, error) {
+	var resp *http.Response
+	var err error
+
+	var sleepT = 250 * time.Millisecond
+	for i := 0; i < retries; i++ {
+		resp, err = client.Do(req)
+		if err == nil && resp.StatusCode < 500 {
+			return resp, nil
+		}
+		time.Sleep(sleepT) // 等待一段时间再重试
+		sleepT *= 2
+		if sleepT > time.Second {
+			sleepT = time.Second
+
+		}
+
+	}
+	return resp, err
+}
+
 // GetBody read body
 func GetBody(client *http.Client, URL string) ([]byte, error) {
-	resp, err := client.Get(URL)
+	req, _ := http.NewRequest("GET", URL, nil)
+	resp, err := retryRequest(client, req, 5)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +106,9 @@ func GetBody(client *http.Client, URL string) ([]byte, error) {
 
 // PostBody read post body
 func PostBody(client *http.Client, URL string, data url.Values) ([]byte, error) {
-	resp, err := client.PostForm(URL, data)
+	req, err := http.NewRequest("POST", URL, strings.NewReader(data.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := retryRequest(client, req, 5)
 	if err != nil {
 		return nil, err
 	}
@@ -93,8 +117,9 @@ func PostBody(client *http.Client, URL string, data url.Values) ([]byte, error) 
 }
 
 // GetJSONBody read json body
-func GetJSONBody(client *http.Client, url string) (map[string]interface{}, error) {
-	resp, err := client.Get(url)
+func GetJSONBody(client *http.Client, URL string) (map[string]interface{}, error) {
+	req, _ := http.NewRequest("GET", URL, nil)
+	resp, err := retryRequest(client, req, 5)
 	if err != nil {
 		return nil, err
 	}
